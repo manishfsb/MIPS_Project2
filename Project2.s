@@ -12,13 +12,14 @@ main:
 	syscall
  	
 	la $s1, reply							#Loading the address of reply in $s1 so that we can add 1 to access each character
-	addi $s4, $s1, 10 						#Adding 10 to $s4 so that we no longer add 1 after we've successfully scanned the 10 characters.
-
-First:	lb $a0, 9($s1)							
-	j Filter							#Load the character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
+	addi $s4, $s1, -1 						#Adding -1 to $s4 so that we no longer subtract 1 after we've successfully scanned the first character.
+	addi $s1, $s1, 9
+						
+First:	lb $a0, 0($s1)							
+	j Filter							#Load the last character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
 
 After:	beq $s4, $s1, End 
-	addi $s1, 1
+	addi $s1, -1
 	j First								#increment address of reply by 1 until we've reached the end of the string
 	
 Filter:	li $t1, 48 
@@ -60,12 +61,12 @@ Upper:	li $s2, -55
 
 invalid:
 	li $v0, 4
-	la $a0, msg
+	la $a0, msg							#print "Invalid input", a string stored in msg if a character is invalid
 	syscall 
 
 	li $v0, 10							#terminate if the input is invalid
-	syscall								#if invalid, we add zero to the total value, then repeat the validation process for the next character
-
+	syscall	
+							
 End:	li $v0, 1
 	add $a0, $s0, $zero						#print the total value stored in $s0 across all three cases
 	syscall	
