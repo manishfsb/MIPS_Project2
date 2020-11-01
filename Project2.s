@@ -19,7 +19,7 @@ First:	lb $a0, 0($s1)
 	j Filter							#Load the last character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
 
 After:	slt $s5, $s1, $s4						#checking if s1 is less than s4 which is the address of the first character, at which point we terminate
-	bne $s4, $zero, End 
+	bne $s5, $zero, End 
 	addi $s1, $s1, -1
 	j First								#decrement address of reply by 1 until we've reached the beginning of the string
 	
