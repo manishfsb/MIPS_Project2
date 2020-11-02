@@ -4,23 +4,22 @@ reply:	.space 10							#Taking 10 characters as input
 msg:	.asciiz "Invalid input"
 
 .text
-main:	
-	li $s0, 0							#Register to store sum of the values of the characters in our base system
+main:	li $s0, 0							#Register to store sum of the values of the characters in our base system
+							
 	li $v0, 8						
 	la $a0, reply							#Reading input string
 	li $a1, 11
 	syscall
  	
-	la $s1, reply							#Loading the address of reply in $s1 so that we can add 1 to access each character
-	la $s4, reply							#Loading address of reply in $s2 as well so that we can check if we've finished scanning the first character
-	addi $s1, $s1, 9
+	la $s4, reply									#Loading the address of reply in $s1 so that we can add 1 to access each character							#Loading address of reply in $s2 as well so that we can check if we've finished scanning the first character
+	addi $s1, $s4, 9
 						
 First:	lb $a0, 0($s1)							
 	j Filter							#Load the last character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
 
-After:	slt $s5, $s1, $s4						#checking if s1 is less than s4 which is the address of the first character, at which point we terminate
-	bne $s5, $zero, End 
+After:							#checking if s1 is less than s4 which is the address of the first character, at which point we terminate 
 	addi $s1, $s1, -1
+	blt $s1, $s4, End
 	j First								#decrement address of reply by 1 until we've reached the beginning of the string
 	
 Filter:	li $t1, 48 
@@ -62,7 +61,7 @@ Upper:	li $s2, -55
 
 invalid:
 	li $v0, 4
-	la $a0, msg							#print "Invalid input", a string stored in msg if a character is invalid
+	la $a0, msg							#print invalid input, a string stored in msg if a character is invalid
 	syscall 
 
 	li $v0, 10							#terminate if the input is invalid
