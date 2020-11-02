@@ -5,21 +5,24 @@ msg:	.asciiz "Invalid input"
 
 .text
 main:	li $s0, 0							#Register to store sum of the values of the characters in our base system
-							
+	li $s5, 29							#Initializing register to 29, the base with my Id. So that we can multiply by 29 with each character from the back
+	li $s6, 1							#The last character will be it's value multiplied by 28 ^ 0 = 1. So we keep on multiplying this register by $s5 for our base system until we scan upto the first element							
+									
 	li $v0, 8						
 	la $a0, reply							#Reading input string
 	li $a1, 11
 	syscall
  	
-	la $s4, reply									#Loading the address of reply in $s1 so that we can add 1 to access each character							#Loading address of reply in $s2 as well so that we can check if we've finished scanning the first character
+	la $s4, reply							#Loading the address of reply in $s1 so that we can add 1 to access each character							#Loading address of reply in $s2 as well so that we can check if we've finished scanning the first character
 	addi $s1, $s4, 9
 						
 First:	lb $a0, 0($s1)							
 	j Filter							#Load the last character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
 
-After:							#checking if s1 is less than s4 which is the address of the first character, at which point we terminate 
+After:									#checking if s1 is less than s4 which is the address of the first character, at which point we terminate 
 	addi $s1, $s1, -1
 	blt $s1, $s4, End
+	
 	j First								#decrement address of reply by 1 until we've reached the beginning of the string
 	
 Filter:	li $t1, 48 
@@ -54,13 +57,13 @@ Lower:	li $s2, -87
 	j After	
 
 Upper:	li $s2, -55	
-	add $s3, $a0, $s2						#if character is uppercase
+	add $s3, $a0, $s2
+	mult $s3, $s6							#if character is uppercase
 	add $s0, $s0, $s3
 	j After
 									#all three branches will eventually lead back to the next character
 
-invalid:
-	li $v0, 4
+invalid:li $v0, 4
 	la $a0, msg							#print invalid input, a string stored in msg if a character is invalid
 	syscall 
 
