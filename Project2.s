@@ -47,14 +47,18 @@ more:
 									
 numeric:
 	li $s2, -48	
-	add $s3, $a0, $s2						#if character is a numeric character
-	add $s0, $s0, $s3						#storing the sum in $s0 after each character so that we can have the total value
+	add $s3, $a0, $s2
+	mult $s6, $s3
+	mflo $s7						#if character is a numeric character
+	add $s0, $s0, $s7						#storing the sum in $s0 after each character so that we can have the total value
 	j After
 	
 
 Lower:	li $s2, -87	
-	add $s3, $a0, $s2						#if character is lowercase
-	add $s0, $s0, $s3						#$a0 % 87 could also have been done, instead of subtracting in all three cases
+	add $s3, $a0, $s2
+	mult $s3, $s6
+	mflo $s7							#if character is lowercase
+	add $s0, $s0, $s7						#$a0 % 87 could also have been done, instead of subtracting in all three cases
 	j After	
 
 Upper:	li $s2, -55	
