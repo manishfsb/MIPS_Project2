@@ -32,14 +32,18 @@ Filter:	li $t1, 48
 	li $t4, 83
 	li $t5, 97
 	li $t6, 115
-	li $t7, 32
+	li $t7, 32							#t7, t8, and t9 registers added to check for blank spaces, null characters and horizontal tabs
 	li $t8, 9
 	li $t9, 0							#loading different values to registers to compare ASCII characters and filter if the character is a number, lowercase or uppercase
 	
 	
 	blt $a0, $t1, invalid						
-	bgt $a0,$t6, invalid 
-	ble $a0, $t6, more						
+	bgt $a0, $t6, invalid 
+	ble $a0, $t6, more
+
+	beq $a0, $t7, After 
+	beq $a0, $t8, After
+	beq $a0, $t9, After						
 
 more:	
 	bge $a0, $t5, Lower						#checking if characters are valid in our base system, if they are, they will go to the respective branches	
