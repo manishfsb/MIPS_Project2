@@ -31,7 +31,10 @@ Filter:	li $t1, 48
 	li $t3, 64							#My Howard Id: 02898734, so base is 29 and the last valid lowercase character is 's' , last valid uppercase = 'S'  
 	li $t4, 83
 	li $t5, 97
-	li $t6, 115							#loading different values to registers to compare ASCII characters and filter if the character is a number, lowercase or uppercase
+	li $t6, 115
+	li $t7, 32
+	li $t8, 9
+	li $t9, 0							#loading different values to registers to compare ASCII characters and filter if the character is a number, lowercase or uppercase
 	
 	
 	blt $a0, $t1, invalid						
