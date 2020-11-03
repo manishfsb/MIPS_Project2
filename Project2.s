@@ -16,7 +16,8 @@ main:	li $s0, 0							#Register to store sum of the values of the characters in 
 	li $t6, 115
 	li $t7, 32							#t7, t8, and t9 registers added to check for blank spaces, null characters and horizontal tabs
 	li $t8, 9
-	li $t9, 0							#loading different values to registers to compare ASCII characters and filter if the character is a number, lowercase or uppercase	
+	li $t9, 0
+	li $t0, 10							#loading different values to registers to compare ASCII characters and filter if the character is a number, lowercase or uppercase	
 							
 	li $v0, 8						
 	la $a0, reply							#Reading input string
@@ -32,7 +33,6 @@ First:	lb $a0, 0($s1)
 After:								#checking if s1 is less than s4 which is the address of the first character, at which point we terminate 
 	addi $s1, $s1, -1
 	blt $s1, $s4, End
-	
 	j First
 
 Base:	mult $s6, $s5
@@ -41,6 +41,7 @@ Base:	mult $s6, $s5
 	
 Filter:	beq $a0, $t7, After 
 	beq $a0, $t8, After
+	beq $a0, $t0, After
 	beq $a0, $t9, After						
 	
 	blt $a0, $t1, invalid						
