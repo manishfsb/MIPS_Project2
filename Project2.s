@@ -19,12 +19,15 @@ main:	li $s0, 0							#Register to store sum of the values of the characters in 
 First:	lb $a0, 0($s1)							
 	j Filter							#Load the last character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
 
-After:	mult $s6, $s5
-	mflo $s6							#checking if s1 is less than s4 which is the address of the first character, at which point we terminate 
+After:								#checking if s1 is less than s4 which is the address of the first character, at which point we terminate 
 	addi $s1, $s1, -1
 	blt $s1, $s4, End
 	
-	j First								#decrement address of reply by 1 until we've reached the beginning of the string
+	j First
+
+Base:	mult $s6, $s5
+	mflo $s6
+	j After								#decrement address of reply by 1 until we've reached the beginning of the string
 	
 Filter:	li $t1, 48 
 	li $t2, 57
@@ -58,7 +61,7 @@ numeric:
 	mult $s6, $s3
 	mflo $s7						#if character is a numeric character
 	add $s0, $s0, $s7						#storing the sum in $s0 after each character so that we can have the total value
-	j After
+	j Base
 	
 
 Lower:	li $s2, -87	
@@ -66,14 +69,14 @@ Lower:	li $s2, -87
 	mult $s3, $s6
 	mflo $s7							#if character is lowercase
 	add $s0, $s0, $s7						#$a0 % 87 could also have been done, instead of subtracting in all three cases
-	j After	
+	j Base	
 
 Upper:	li $s2, -55	
 	add $s3, $a0, $s2
 	mult $s3, $s6
 	mflo $s7 							#if character is uppercase
 	add $s0, $s0, $s7
-	j After
+	j Base
 									#all three branches will eventually lead back to the next character
 
 invalid:li $v0, 4
