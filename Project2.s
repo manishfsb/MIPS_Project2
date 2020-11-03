@@ -39,16 +39,15 @@ Base:	mult $s6, $s5
 	mflo $s6
 	j After								#decrement address of reply by 1 until we've reached the beginning of the string
 	
-Filter:	
+Filter:	beq $a0, $t7, After 
+	beq $a0, $t8, After
+	beq $a0, $t9, After						
 	
 	blt $a0, $t1, invalid						
 	bgt $a0, $t6, invalid 
 	ble $a0, $t6, more
 
-	beq $a0, $t7, After 
-	beq $a0, $t8, After
-	beq $a0, $t9, After						
-
+	
 more:	
 	bge $a0, $t5, Lower						#checking if characters are valid in our base system, if they are, they will go to the respective branches	
 	bgt $a0, $t4, invalid
