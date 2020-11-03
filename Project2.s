@@ -7,7 +7,17 @@ msg:	.asciiz "Invalid input"
 main:	li $s0, 0							#Register to store sum of the values of the characters in our base system
 	li $s5, 2							#Initializing register to 29, the base with my Id. So that we can multiply by 29 with each character from the back
 	li $s6, 1							#The last character will be it's value multiplied by 28 ^ 0 = 1. So we keep on multiplying this register by $s5 for our base system until we scan upto the first element							
-									
+		
+	li $t1, 48 
+	li $t2, 57
+	li $t3, 64							#My Howard Id: 02898734, so base is 29 and the last valid lowercase character is 's' , last valid uppercase = 'S'  
+	li $t4, 83
+	li $t5, 97
+	li $t6, 115
+	li $t7, 32							#t7, t8, and t9 registers added to check for blank spaces, null characters and horizontal tabs
+	li $t8, 9
+	li $t9, 0							#loading different values to registers to compare ASCII characters and filter if the character is a number, lowercase or uppercase	
+							
 	li $v0, 8						
 	la $a0, reply							#Reading input string
 	li $a1, 11
@@ -29,16 +39,7 @@ Base:	mult $s6, $s5
 	mflo $s6
 	j After								#decrement address of reply by 1 until we've reached the beginning of the string
 	
-Filter:	li $t1, 48 
-	li $t2, 57
-	li $t3, 64							#My Howard Id: 02898734, so base is 29 and the last valid lowercase character is 's' , last valid uppercase = 'S'  
-	li $t4, 83
-	li $t5, 97
-	li $t6, 115
-	li $t7, 32							#t7, t8, and t9 registers added to check for blank spaces, null characters and horizontal tabs
-	li $t8, 9
-	li $t9, 0							#loading different values to registers to compare ASCII characters and filter if the character is a number, lowercase or uppercase
-	
+Filter:	
 	
 	blt $a0, $t1, invalid						
 	bgt $a0, $t6, invalid 
