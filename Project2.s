@@ -5,7 +5,7 @@ msg:	.asciiz "Invalid input"
 
 .text
 main:	li $s0, 0							#Register to store sum of the values of the characters in our base system
-	li $s5, 29							#Initializing register to 29, the base with my Id. So that we can multiply by 29 with each character from the back
+	li $s5, 2							#Initializing register to 29, the base with my Id. So that we can multiply by 29 with each character from the back
 	li $s6, 1							#The last character will be it's value multiplied by 28 ^ 0 = 1. So we keep on multiplying this register by $s5 for our base system until we scan upto the first element							
 									
 	li $v0, 8						
@@ -19,7 +19,8 @@ main:	li $s0, 0							#Register to store sum of the values of the characters in 
 First:	lb $a0, 0($s1)							
 	j Filter							#Load the last character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
 
-After:									#checking if s1 is less than s4 which is the address of the first character, at which point we terminate 
+After:	mult $s6, $s5
+	mflo $s6							#checking if s1 is less than s4 which is the address of the first character, at which point we terminate 
 	addi $s1, $s1, -1
 	blt $s1, $s4, End
 	
