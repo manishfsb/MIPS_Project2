@@ -7,18 +7,7 @@ msg:	.asciiz "Invalid input"
 main:	li $s0, 0							#Register to store sum of the values of the characters in our base system
 	li $s5, 2							#Initializing register to 29, the base with my Id. So that we can multiply by 29 with each character from the back
 	li $s6, 1							#The last character will be it's value multiplied by 28 ^ 0 = 1. So we keep on multiplying this register by $s5 for our base system until we scan upto the first element							
-		
-	li $t1, 48 
-	li $t2, 57
-	li $t3, 64							#My Howard Id: 02898734, so base is 29 and the last valid lowercase character is 's' , last valid uppercase = 'S'  
-	li $t4, 83
-	li $t5, 97
-	li $t6, 115
-	li $t7, 32							#t7, t8, and t9 registers added to check for blank spaces, null characters and horizontal tabs
-	li $t8, 9
-	li $t9, 0
-	li $t0, 10							#loading different values to registers to compare ASCII characters and filter if the character is a number, lowercase or uppercase	
-							
+								
 	li $v0, 8						
 	la $a0, reply							#Reading input string
 	li $a1, 11
@@ -44,17 +33,17 @@ Filter:	beq $a0, 32, After
 	beq $a0, 0, After
 	beq $a0, 10, After						
 	
-	blt $a0, $t1, invalid						
-	bgt $a0, $t6, invalid 
-	ble $a0, $t6, more
+	blt $a0, 48, invalid						
+	bgt $a0, 115, invalid 
+	ble $a0, 115, more
 
 	
 more:	
-	bge $a0, $t5, Lower						#checking if characters are valid in our base system, if they are, they will go to the respective branches	
-	bgt $a0, $t4, invalid
-	bgt $a0, $t3, Upper
-	bgt $a0, $t2, invalid
-	bge $a0, $t1, numeric
+	bge $a0, 97, Lower						#checking if characters are valid in our base system, if they are, they will go to the respective branches	
+	bgt $a0, 83, invalid
+	bgt $a0, 64, Upper
+	bgt $a0, 57, invalid
+	bge $a0, 48, numeric
 									
 numeric:
 	li $s2, -48	
