@@ -39,10 +39,10 @@ Base:	mult $s6, $s5
 	mflo $s6
 	j After								#decrement address of reply by 1 until we've reached the beginning of the string
 	
-Filter:	beq $a0, $t7, After 
-	beq $a0, $t8, After
-	beq $a0, $t0, After
-	beq $a0, $t9, After						
+Filter:	beq $a0, 32, After 
+	beq $a0, 9, After
+	beq $a0, 0, After
+	beq $a0, 10, After						
 	
 	blt $a0, $t1, invalid						
 	bgt $a0, $t6, invalid 
