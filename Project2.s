@@ -56,7 +56,8 @@ more:
 	bge $a0, 48, numeric
 	
 bool:	li $t0, 0
-	j First								
+	j First	
+							
 numeric:
 	addi $t1, $t1, 1
 	bgt $t1, 4, invalid
@@ -97,7 +98,9 @@ invalid:li $v0, 4
 	li $v0, 10							#terminate if the input is invalid
 	syscall	
 							
-End:	li $v0, 1
+End:	beq $t1, 0, invalid
+
+	li $v0, 1
 	add $a0, $s0, $zero						#print the total value stored in $s0 across all three cases
 	syscall	
 
