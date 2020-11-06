@@ -25,6 +25,8 @@ First:	lb $a0, 0($s1)
 After:									#checking if s1 is less than s4 which is the address of the first character, at which point we terminate 
 	addi $s1, $s1, -1
 	blt $s1, $s4, End
+
+	beq $t1, 4, bool
 	j First
 
 Base:	mult $s6, $s5
@@ -54,11 +56,10 @@ more:
 	bge $a0, 48, numeric
 	
 bool:	li $t0, 0
-	j invalid
-								
+	j First								
 numeric:
 	addi $t1, $t1, 1
-	bgt $t1, 4, bool
+	bgt $t1, 4, invalid
 	li $t0, 1
 	li $s2, -48	
 	add $s3, $a0, $s2
@@ -69,7 +70,7 @@ numeric:
 	
 
 Lower:	addi $t1, $t1, 1
-	bgt $t1, 4, bool
+	bgt $t1, 4, invalid
 	li $t0, 1
 	li $s2, -87	
 	add $s3, $a0, $s2
@@ -79,7 +80,7 @@ Lower:	addi $t1, $t1, 1
 	j Base	
 
 Upper:	addi $t1, $t1, 1
-	bgt $t1, 4, bool
+	bgt $t1, 4, invalid
 	li $t0, 1
 	li $s2, -55	
 	add $s3, $a0, $s2
