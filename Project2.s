@@ -37,7 +37,7 @@ After1:	bne $t0, $zero, invalid
 Filter:	
 	beq $a0, 32, After1 
 	beq $a0, 9, After1
-	beq $a0, 0, After1
+	beq $a0, 0, After1						#Checking for space, tab, null and enter
 	beq $a0, 10, After1						
 	
 	blt $a0, 48, invalid						
@@ -65,7 +65,9 @@ numeric:
 	j Base
 	
 
-Lower:	li $t0, 1
+Lower:	addi $t1, $t1, 1
+	bgt $t1, 4, invalid
+	li $t0, 1
 	li $s2, -87	
 	add $s3, $a0, $s2
 	mult $s3, $s6
@@ -73,7 +75,9 @@ Lower:	li $t0, 1
 	add $s0, $s0, $s7						#$a0 % 87 could also have been done, instead of subtracting in all three cases
 	j Base	
 
-Upper:	li $t0, 1
+Upper:	addi $t1, $t1, 1
+	bgt $t1, 4, invalid
+	li $t0, 1
 	li $s2, -55	
 	add $s3, $a0, $s2
 	mult $s3, $s6
