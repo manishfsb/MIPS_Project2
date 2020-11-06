@@ -55,6 +55,7 @@ more:
 									
 numeric:
 	addi $t1, $t1, 1
+	bgt $t1, 4, invalid
 	li $t0, 1
 	li $s2, -48	
 	add $s3, $a0, $s2
