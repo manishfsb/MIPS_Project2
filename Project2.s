@@ -22,7 +22,7 @@ main:	li $s0, 0							#Register to store sum of the values of the characters in 
 First:	lb $a0, 0($s1)							
 	j Filter							#Load the last character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
 
-After:								#checking if s1 is less than s4 which is the address of the first character, at which point we terminate 
+After:									#checking if s1 is less than s4 which is the address of the first character, at which point we terminate 
 	addi $s1, $s1, -1
 	blt $s1, $s4, End
 	j First
@@ -52,10 +52,13 @@ more:
 	bgt $a0, 64, Upper
 	bgt $a0, 57, invalid
 	bge $a0, 48, numeric
-									
+	
+bool:	li $t0, 0
+	j invalid
+								
 numeric:
 	addi $t1, $t1, 1
-	bgt $t1, 4, invalid
+	bgt $t1, 4, bool
 	li $t0, 1
 	li $s2, -48	
 	add $s3, $a0, $s2
@@ -66,7 +69,7 @@ numeric:
 	
 
 Lower:	addi $t1, $t1, 1
-	bgt $t1, 4, invalid
+	bgt $t1, 4, bool
 	li $t0, 1
 	li $s2, -87	
 	add $s3, $a0, $s2
@@ -76,7 +79,7 @@ Lower:	addi $t1, $t1, 1
 	j Base	
 
 Upper:	addi $t1, $t1, 1
-	bgt $t1, 4, invalid
+	bgt $t1, 4, bool
 	li $t0, 1
 	li $s2, -55	
 	add $s3, $a0, $s2
