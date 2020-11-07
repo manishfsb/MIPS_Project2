@@ -1,7 +1,6 @@
 .data
 												
 reply:	.space 10							#Taking 10 characters as input
-msg:	.asciiz "Invalid input"
 msg1:	.asciiz "Invalid input"
 
 .text
@@ -19,6 +18,7 @@ main:	li $s0, 0							#Register to store sum of the values of the characters in 
  	
 	la $s4, reply							#Loading the address of reply in $s1 so that we can add 1 to access each character							#Loading address of reply in $s2 as well so that we can check if we've finished scanning the first character
 	addi $s1, $s4, 9
+	addi $s5, $s4, 9
 						
 First:	lb $a0, 0($s1)							
 	j Filter							#Load the last character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
@@ -34,7 +34,9 @@ Base:	mult $s6, $s5
 	mflo $s6
 	j After								#decrement address of reply by 1 until we've reached the beginning of the string
 
-After1:	bne $t0, $zero, invalid
+After1:	beq $s1, $s4, Middle
+	beq $s1, $s4
+	bne $t0, $zero, invalid
 	j After
 	
 Filter:	
