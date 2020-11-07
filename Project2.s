@@ -31,11 +31,8 @@ LoopA:
 	
 	la $t3, 0($s1)
 	move $a1, $t3
-	li $t0, 1
 	addi $s1, $s1, -4
 	j First
-
-call:	jal Sub
 
 After2:	addi $s1, $s1, -1
 	j First
@@ -44,20 +41,20 @@ Sub:	lb $a0, 0($a1)
 	j Filter
 									#Load the last character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
 After:									#checking if s1 is less than s4 which is the address of the first character, at which point we terminate 
-	addi $s1, $s1, -1
+	addi $a1, $a1, -1
 	blt $s1, $s4, print
 
 	beq $t1, 4, bool
-	j First
+	j Sub
 
 Base:	mult $s6, $s5
 	mflo $s6
 	j After								#decrement address of reply by 1 until we've reached the beginning of the string
 
-After1:	beq $s1, $s4, print						#if the filling characters are either the first or last character, we don't check further. If they're not, we check left and right to see if they're invalid
+After1:	beq $a1, $s4, print						#if the filling characters are either the first or last character, we don't check further. If they're not, we check left and right to see if they're invalid
 
 	beq $t0, $zero, After
-	lb $a0, -1($s1)
+	lb $a0, -1($a1)
 
 	beq $a0, 32, After 
 	beq $a0, 9, After
@@ -83,13 +80,11 @@ more:
 	bgt $a0, 64, Upper
 	bgt $a0, 57, invalid
 	bge $a0, 48, numeric
-	
-bool:	li $t0, 0
-	j First	
+		
 							
 numeric:
 	addi $t1, $t1, 1
-	bgt $t1, 4, invalid
+	bgt $t1, 4, return
 	li $t0, 1
 	li $s2, -48	
 	add $s3, $a0, $s2
@@ -100,7 +95,7 @@ numeric:
 	
 
 Lower:	addi $t1, $t1, 1
-	bgt $t1, 4, invalid
+	bgt $t1, 4, return
 	li $t0, 1
 	li $s2, -87	
 	add $s3, $a0, $s2
@@ -110,7 +105,7 @@ Lower:	addi $t1, $t1, 1
 	j Base	
 
 Upper:	addi $t1, $t1, 1
-	bgt $t1, 4, invalid
+	bgt $t1, 4, return
 	li $t0, 1
 	li $s2, -55	
 	add $s3, $a0, $s2
@@ -120,18 +115,26 @@ Upper:	addi $t1, $t1, 1
 	j Base
 									#all three branches will eventually lead back to the next character
 
-invalid:li $v0, 4
-	la $a0, msg1							#print invalid input a string stored in msg if a character is invalid
-	syscall 
-	j End
+invalid:li $v0, -1
+	j return
+
+return:	move $v0, $s0
+	jr $ra
+
+call:	jal Sub
 							
-print:	beq $t1, 0, invalid
+print:	beq $t1, 0, invali
+	beq $v0, -1, invali
 
 	li $v0, 1
 	add $a0, $s0, $zero						#print the total value stored in $s0 across all three cases
 	syscall	
 	j End
 	
+
+invali: li $v0, 4
+	la $a0, msg1
+	syscall 
 	
 End:	li $v0, 10							#terminate once the output is printed
 	syscall
