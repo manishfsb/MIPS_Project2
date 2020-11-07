@@ -6,7 +6,7 @@ msg1:	.asciiz "Invalid input"
 
 .text
 main:	li $s0, 0							#Register to store sum of the values of the characters in our base system
-	li $s5, 2							#Initializing register to 29, the base with my Id. So that we can multiply by 29 with each character from the back
+	li $s5, 30							#Initializing register to 29, the base with my Id. So that we can multiply by 29 with each character from the back
 	li $s6, 1							#A register to keep on multiplying by our base, since the last character will be the value only
 
 	li $t0, 0							#Boolean register that stores 0 if we haven't reached a valid character, 1 if we have
@@ -25,7 +25,7 @@ First:	lb $a0, 0($s1)
 
 After:									#checking if s1 is less than s4 which is the address of the first character, at which point we terminate 
 	addi $s1, $s1, -1
-	blt $s1, $s4, End
+	blt $s1, $s4, print
 
 	beq $t1, 4, bool
 	j First
@@ -102,6 +102,7 @@ print:	beq $t1, 0, invalid
 	li $v0, 1
 	add $a0, $s0, $zero						#print the total value stored in $s0 across all three cases
 	syscall	
+	j End
 
 End:	li $v0, 10							#terminate once the output is printed
 	syscall
