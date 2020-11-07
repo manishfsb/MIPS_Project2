@@ -18,7 +18,7 @@ main:	li $s0, 0							#Register to store sum of the values of the characters in 
  	
 	la $s4, reply							#Loading the address of reply in $s1 so that we can add 1 to access each character							#Loading address of reply in $s2 as well so that we can check if we've finished scanning the first character
 	addi $s1, $s4, 9
-	addi $s5, $s4, 9
+	addi $t5, $s4, 9
 						
 First:	lb $a0, 0($s1)							
 	j Filter							#Load the last character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
@@ -34,8 +34,21 @@ Base:	mult $s6, $s5
 	mflo $s6
 	j After								#decrement address of reply by 1 until we've reached the beginning of the string
 
-After1:	beq $s1, $s4, Middle
-	beq $s1, $s4
+After1:	beq $s1, $s4, Middle						#if the filling characters are either the first or last character, we don't check further. If they're not, we check left and right to see if they're invalid
+	beq $s1, $s5, Middle
+
+	lb $a0, -1($s1)
+	
+	beq $t0, $zero, First
+
+	beq $a0, 32, First 
+	beq $a0, 9, First
+	beq $a0, 0, First						#Checking for space, tab, null and enter
+	beq $a0, 10, First
+	
+	j invalid						
+	
+	 
 	bne $t0, $zero, invalid
 	j After
 	
