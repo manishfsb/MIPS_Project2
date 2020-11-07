@@ -1,6 +1,6 @@
 .data
 												
-reply:	.space 10							#Taking 10 characters as input
+reply:	.space 10						#Taking 10 characters as input
 msg1:	.asciiz "Invalid input"
 
 .text
@@ -18,11 +18,17 @@ main:	li $s0, 0							#Register to store sum of the values of the characters in 
  	
 	la $s4, reply							#Loading the address of reply in $s1 so that we can add 1 to access each character							#Loading address of reply in $s2 as well so that we can check if we've finished scanning the first character
 	addi $s1, $s4, 9
-	addi $t5, $s4, 9
 						
 First:	lb $a0, 0($s1)							
-	j Filter							#Load the last character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
+	j LoopA
 
+LoopA:	beq $a0, 32, After2 
+	beq $a0, 9, After2
+	beq $a0, 0, After2						#Checking for space, tab, null and enter
+	beq $a0, 10, After2
+
+After2:	addi $s1, $s1, -1
+									#Load the last character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
 After:									#checking if s1 is less than s4 which is the address of the first character, at which point we terminate 
 	addi $s1, $s1, -1
 	blt $s1, $s4, print
@@ -111,7 +117,8 @@ print:	beq $t1, 0, invalid
 	add $a0, $s0, $zero						#print the total value stored in $s0 across all three cases
 	syscall	
 	j End
-
+	
+	
 End:	li $v0, 10							#terminate once the output is printed
 	syscall
 
