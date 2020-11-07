@@ -30,6 +30,7 @@ LoopA:
 	beq $a0, 10, After2
 	
 	la $t3, 0($s1)
+	move $a1, $t3
 	li $t0, 1
 	addi $s1, $s1, -4
 	j First
@@ -38,6 +39,9 @@ call:	jal Sub
 
 After2:	addi $s1, $s1, -1
 	j First
+
+Sub:	lb $a0, 0($a1)
+	j Filter
 									#Load the last character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
 After:									#checking if s1 is less than s4 which is the address of the first character, at which point we terminate 
 	addi $s1, $s1, -1
