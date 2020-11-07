@@ -22,12 +22,19 @@ main:	li $s0, 0							#Register to store sum of the values of the characters in 
 First:	lb $a0, 0($s1)							
 	j LoopA
 
-LoopA:	beq $a0, 32, After2 
+LoopA:	bne $t0, $zero, Four
+	beq $a0, 32, After2 
 	beq $a0, 9, After2
 	beq $a0, 0, After2						#Checking for space, tab, null and enter
 	beq $a0, 10, After2
+	
+	la $t3, 0($s1)
+	li $t0, 1
+	addi $s1, $s1, -4
+	j First
 
 After2:	addi $s1, $s1, -1
+	blt $s1, $s4, print
 									#Load the last character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
 After:									#checking if s1 is less than s4 which is the address of the first character, at which point we terminate 
 	addi $s1, $s1, -1
