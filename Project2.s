@@ -36,15 +36,13 @@ Base:	mult $s6, $s5
 
 After1:	beq $s1, $s4, print						#if the filling characters are either the first or last character, we don't check further. If they're not, we check left and right to see if they're invalid
 
-	lb $a0, -1($s1)
-	
 	beq $t0, $zero, After
+	lb $a0, -1($s1)
 
 	beq $a0, 32, After 
 	beq $a0, 9, After
 	beq $a0, 0, After						#Checking for space, tab, null and enter
 	beq $a0, 10, After
-	
 	j invalid					
 	
 Filter:	
