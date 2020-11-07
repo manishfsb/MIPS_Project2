@@ -19,7 +19,8 @@ main:	li $s0, 0							#Register to store sum of the values of the characters in 
 	la $s4, reply							#Loading the address of reply in $s1 so that we can add 1 to access each character							#Loading address of reply in $s2 as well so that we can check if we've finished scanning the first character
 	addi $s1, $s4, 9
 						
-First:	lb $a0, 0($s1)							
+First:	blt $s1, $s4, call
+	lb $a0, 0($s1)							
 	j LoopA
 
 LoopA:	bne $t0, $zero, Four
@@ -32,6 +33,8 @@ LoopA:	bne $t0, $zero, Four
 	li $t0, 1
 	addi $s1, $s1, -4
 	j First
+
+call:	jal Sub
 
 After2:	addi $s1, $s1, -1
 	blt $s1, $s4, print
