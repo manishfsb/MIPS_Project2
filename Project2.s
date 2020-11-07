@@ -42,9 +42,6 @@ Sub:	lb $a0, 0($a1)
 									#Load the last character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
 After:									#checking if s1 is less than s4 which is the address of the first character, at which point we terminate 
 	addi $a1, $a1, -1
-	blt $s1, $s4, print
-
-	beq $t1, 4, bool
 	j Sub
 
 Base:	mult $s6, $s5
