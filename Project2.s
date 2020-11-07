@@ -6,18 +6,18 @@ msg:	.asciiz "Invalid input"
 .text
 main:	li $s0, 0							#Register to store sum of the values of the characters in our base system
 	li $s5, 2							#Initializing register to 29, the base with my Id. So that we can multiply by 29 with each character from the back
-	li $s6, 1
+	li $s6, 1							#A register to keep on multiplying by our base, since the last character will be the value only
 
-	li $t0, 0
-	li $t1, 0							#The last character will be it's value multiplied by 28 ^ 0 = 1. So we keep on multiplying this register by $s5 for our base system until we scan upto the first element							
-								
+	li $t0, 0							#Boolean register that stores 0 if we haven't reached a valid character, 1 if we have
+	li $t1, 0							#Register to track only 3 characters after the first valid character
+							
 	li $v0, 8						
 	la $a0, reply							#Reading input string
 	li $a1, 11
 	syscall
  	
 	la $s4, reply							#Loading the address of reply in $s1 so that we can add 1 to access each character							#Loading address of reply in $s2 as well so that we can check if we've finished scanning the first character
-	addi $s1, $s4, 9
+	addi $s1, $s4, 10
 						
 First:	lb $a0, 0($s1)							
 	j Filter							#Load the last character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
@@ -92,7 +92,7 @@ Upper:	addi $t1, $t1, 1
 									#all three branches will eventually lead back to the next character
 
 invalid:li $v0, 4
-	la $a0, msg							#print invalid input, a string stored in msg if a character is invalid
+	la $a0, msg							#print invalid input a string stored in msg if a character is invalid
 	syscall 
 
 	li $v0, 10							#terminate if the input is invalid
