@@ -1,6 +1,7 @@
 .data
 												
-reply:	.space 10						#Taking 1000 characters as input
+reply:	.space 10							#Taking 1000 characters as input
+msg:	.asciiz "Invalid input"
 msg1:	.asciiz "Invalid input"
 
 .text
@@ -128,7 +129,8 @@ invalid:li $v0, -1
 return:	move $v0, $s0
 	jr $ra
 
-call:	jal Sub
+call:	beq $t2, $zero, invali
+	jal Sub
 							
 print:	beq $t1, 0, invali
 	beq $v0, -1, invali
@@ -139,7 +141,8 @@ print:	beq $t1, 0, invali
 	j End
 	
 
-invali: li $v0, 4
+invali: 
+	li $v0, 4
 	la $a0, msg1
 	syscall 
 	
