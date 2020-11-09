@@ -123,7 +123,7 @@ Upper:	addi $t1, $t1, 1
 	j Base
 									#all three branches will eventually lead back to the next character
 
-invalid:li $v0, -1
+invalid:li $v1, -1
 	j return
 
 return:	move $v0, $s0
@@ -133,7 +133,7 @@ call:	beq $t2, $zero, invali
 	jal Sub
 							
 print:	beq $t1, 0, invali
-	beq $v0, -1, invali
+	beq $v1, -1, invali
 
 	li $v0, 1
 	add $a0, $s0, $zero						#print the total value stored in $s0 across all three cases
