@@ -18,7 +18,7 @@ main:	li $s0, 0							#Register to store sum of the values of the characters in 
 	li $a1, 1001
 	syscall
  	
-	la $s4, reply							#Loading the address of reply in $s1 so that we can add 1 to access each character							#Loading address of reply in $s2 as well so that we can check if we've finished scanning the first character
+	la $s4, reply							#Loading the address of reply in $s1 so that we can add -1 to access each character							#Loading address of reply in $s2 as well so that we can check if we've finished scanning the first character
 	addi $s1, $s4, 999
 						
 First:	blt $s1, $s4, call							
