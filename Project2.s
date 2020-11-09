@@ -1,6 +1,6 @@
 .data
 												
-reply:	.space 1000						#Taking 1000 characters as input
+reply:	.space 10						#Taking 1000 characters as input
 msg1:	.asciiz "Invalid input"
 
 .text
@@ -13,15 +13,14 @@ main:	li $s0, 0							#Register to store sum of the values of the characters in 
 							
 	li $v0, 8						
 	la $a0, reply							#Reading input string
-	li $a1, 1001
+	li $a1, 11
 	syscall
  	
 	la $s4, reply							#Loading the address of reply in $s1 so that we can add 1 to access each character							#Loading address of reply in $s2 as well so that we can check if we've finished scanning the first character
-	addi $s1, $s4, 999
+	addi $s1, $s4, 9
 						
-First:	lb $a0, 0($s1)
-	blt $s1, $s4, call							
-	j LoopA
+First:	blt $s1, $s4, call							
+	lb $a0, 0($s1)
 
 LoopA:
 	beq $a0, 32, After2 
@@ -48,12 +47,12 @@ Base:	mult $s6, $s5
 	mflo $s6
 	j After								#decrement address of reply by 1 until we've reached the beginning of the string
 
-After1:	beq $a1, $s4, return						#if the filling characters are either the first or last character, we don't check further. If they're not, we check left and right to see if they're invalid
+After1:	beq $a1, $s4, skip						#if the filling characters are either the first or last character, we don't check further. If they're not, we check left and right to see if they're invalid
 
 	beq $t0, $zero, After
 	lb $a0, -1($a1)
 
-	beq $a0, 32, After 
+skip:	beq $a0, 32, After 
 	beq $a0, 9, After
 	beq $a0, 0, After						#Checking for space, tab, null and enter
 	beq $a0, 10, After
