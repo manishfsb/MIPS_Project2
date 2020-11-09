@@ -30,7 +30,7 @@ LoopA:
 	beq $a0, 10, After2
 	
 	beq $t2, 1, invali
-	j Save
+	
 	li $t2, 1							#Changing the register to 1 to indicate we have reached our first valid character
 	la $t3, 0($s1)
 	move $a1, $t3
@@ -85,25 +85,27 @@ more:
 							
 numeric:
 	addi $t1, $t1, 1
-	bgt $t1, 4, return
 	li $t0, 1
 	li $s2, -48	
 	add $s3, $a0, $s2
 	mult $s6, $s3
 	mflo $s7							#if character is a numeric character
-	add $s0, $s0, $s7						#storing the sum in $s0 after each character so that we can have the total value
+	add $s0, $s0, $s7
+	beq $t1, 4, return
+							#storing the sum in $s0 after each character so that we can have the total value
 	j Base
 	
 
 Lower:	addi $t1, $t1, 1
-	bgt $t1, 4, return
 	li $t0, 1
 	li $s2, -87	
 	add $s3, $a0, $s2
 	mult $s3, $s6
 	mflo $s7							#if character is lowercase
 	add $s0, $s0, $s7						#$a0 % 87 could also have been done, instead of subtracting in all three cases
-	j Base	
+	beq $t1, 4, return
+	j Base
+		
 
 Upper:	addi $t1, $t1, 1
 	bgt $t1, 4, return
@@ -113,6 +115,7 @@ Upper:	addi $t1, $t1, 1
 	mult $s3, $s6
 	mflo $s7 							#if character is uppercase
 	add $s0, $s0, $s7
+	beq $t1, 4, return
 	j Base
 									#all three branches will eventually lead back to the next character
 
