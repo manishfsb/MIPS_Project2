@@ -9,7 +9,8 @@ main:	li $s0, 0							#Register to store sum of the values of the characters in 
 	li $s6, 1							#A register to keep on multiplying by our base, since the last character will be the value only
 
 	li $t0, 0							#Boolean register that stores 0 if we haven't reached a valid character, 1 if we have
-	li $t1, 0							#Register to track only 3 characters after the first valid character
+	li $t1, 0							#Register to track only 3 characters after the first valid character						
+	li $t2, 0							#another boolean register
 							
 	li $v0, 8						
 	la $a0, reply							#Reading input string
@@ -28,12 +29,16 @@ LoopA:
 	beq $a0, 0, After2						#Checking for space, tab, null and enter
 	beq $a0, 10, After2
 	
+	beq $t2, 1, invali
+	j Save
+	li $t2, 1							#Changing the register to 1 to indicate we have reached our first valid character
 	la $t3, 0($s1)
 	move $a1, $t3
 	addi $s1, $s1, -4
 	j First
 
-After2:	addi $s1, $s1, -1
+After2:	
+	addi $s1, $s1, -1
 	j First
 
 Sub:	lb $a0, 0($a1)
