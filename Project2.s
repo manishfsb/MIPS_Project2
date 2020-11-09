@@ -87,66 +87,45 @@ more:
 	bge $a0, 48, numeric
 		
 							
-numeric:
-	addi $t1, $t1, 1
+numeric:li $s2, -48							# - 48 in s2 because 0 has value 0 in our base system
+							
+Lower:	li $s2, -87							# - 87 in s2 because a has value 10 in our base system
+
+Upper:	li $s2, -55							# - 55 in s2 because A has value 10 in our base system
+
+			
+Common:	addi $t1, $t1, 1
 	li $t0, 1
 	li $s2, -48	
-	add $s3, $a0, $s2
+	add $s3, $a0, $s2						#instead of repeating the same steps in the three labels, we just load the values we use to get the value of a character in each label and then do all the computations in one common label.
 	mult $s6, $s3
-	mflo $s7							#if character is a numeric character
+	mflo $s7							
 	add $s0, $s0, $s7
-	beq $t1, 4, return
-							#storing the sum in $s0 after each character so that we can have the total value
-	j Base
-	
+	beq $t1, 4, return						
 
-Lower:	addi $t1, $t1, 1
-	li $t0, 1
-	li $s2, -87	
-	add $s3, $a0, $s2
-	mult $s3, $s6
-	mflo $s7							#if character is lowercase
-	add $s0, $s0, $s7						#$a0 % 87 could also have been done, instead of subtracting in all three cases
-	beq $t1, 4, return
-	j Base
-		
-
-Upper:	addi $t1, $t1, 1
-	bgt $t1, 4, return
-	li $t0, 1
-	li $s2, -55	
-	add $s3, $a0, $s2
-	mult $s3, $s6
-	mflo $s7 							#if character is uppercase
-	add $s0, $s0, $s7
-	beq $t1, 4, return
-	j Base
-									#all three branches will eventually lead back to the next character
-
-invalid:li $v1, -1
+invalid:li $v1, -1							#in case, any among the four characters are invalid, we store -1 in v1 and later check if it is -1 in print label
 	j return
 
 return:	move $v0, $s0
 	jr $ra
 
-call:	beq $t2, $zero, invali
+call:	beq $t2, $zero, invali						#if we haven't found a valid character while scanning through all leading and trailing white spaces, we don't call the subfunction else we do
 	jal Sub
 							
-print:	beq $t1, 0, invali
-	beq $v1, -1, invali
+print:							
+	beq $v1, -1, invali						#checking if a character was invalid passed through v1, if not print the sum of values
 
 	li $v0, 1
 	add $a0, $s0, $zero						#print the total value stored in $s0 across all three cases
 	syscall	
 	j End
 	
-
 invali: 
 	li $v0, 4
-	la $a0, msg1
+	la $a0, msg1							#print the string 'Invalid input' in case we have invalid cases
 	syscall 
 	
-End:	li $v0, 10							#terminate once the output is printed
+End:	li $v0, 10							#terminate once the output or invalid string is printed
 	syscall
 
 	
