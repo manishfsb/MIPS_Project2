@@ -44,7 +44,7 @@ After2:
 Sub:	lb $a0, 0($a1)
 	j Filter
 									#Load the last character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
-After:									#checking if s1 is less than s4 which is the address of the first character, at which point we terminate 
+After:	blt $a1, $s4, return								#checking if s1 is less than s4 which is the address of the first character, at which point we terminate 
 	addi $a1, $a1, -1
 	j Sub
 
