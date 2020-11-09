@@ -27,43 +27,43 @@ First:	blt $s1, $s4, call
 LoopA:
 	beq $a0, 32, After2 
 	beq $a0, 9, After2
-	beq $a0, 0, After2						#Checking for space, tab, null and enter
+	beq $a0, 0, After2						#Checking for space, tab, null and enter as only leading and trailing white spaces
 	beq $a0, 10, After2
 	
 	beq $t2, 1, invali
 	
 	li $t2, 1							#Changing the register to 1 to indicate we have reached our first valid character
-	la $t3, 0($s1)
+	la $t3, 0($s1)							#storing the address and moving address to a1 to later pass to our subprogram
 	move $a1, $t3
-	addi $s1, $s1, -4
+	addi $s1, $s1, -4						#once we reach the first valid character, we only care about the leading white spaces, we skip the next four characters because they will be filtered in our subprogram
 	j First
 
 After2:	
 	addi $s1, $s1, -1
 	j First
 
-Sub:	lb $a0, 0($a1)
+Sub:	lb $a0, 0($a1)							#Load the character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
 	j Filter
-									#Load the last character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
-After:	blt $a1, $s4, return								#checking if s1 is less than s4 which is the address of the first character, at which point we terminate 
-	addi $a1, $a1, -1
+									
+After:	blt $a1, $s4, return						#checking if s1 is less than s4 which is the address of the first character, at which point we terminate 
+	addi $a1, $a1, -1						#decrementing by 1 as we are iterating from the back
 	j Sub
 
-Base:	mult $s6, $s5
+Base:	mult $s6, $s5							#keep on multiplying s6 by our base to calculate the total value correctly, equivalent to t6 = t6 * t5 in high level languages
 	mflo $s6
-	j After								#decrement address of reply by 1 until we've reached the beginning of the string
+	j After								
 
-After1:	beq $a1, $s4, skip
+After1:	beq $a1, $s4, return						#if the white space characters are either the first or last character, we don't check further. If they're not, we check left and right to see if they're invalid
 	addi $t1, $t1, 1
-	beq $t1, 4, skip
-							#if the filling characters are either the first or last character, we don't check further. If they're not, we check left and right to see if they're invalid
+	beq $t1, 4, return						
+									
 
 	beq $t0, $zero, After
 	lb $a0, -1($a1)
 
-skip:	beq $a0, 32, After 
+	beq $a0, 32, After 
 	beq $a0, 9, After
-	beq $a0, 0, After						#Checking for space, tab, null and enter
+	beq $a0, 0, After						#Checking for space, tab, null, enter and if they are in between valid characters, if not we just move to next character
 	beq $a0, 10, After
 	j invalid					
 	
