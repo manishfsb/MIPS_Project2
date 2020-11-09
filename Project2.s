@@ -1,12 +1,12 @@
 .data
 												
-reply:	.space 10							#Taking 1000 characters as input
+reply:	.space 1000							#Taking 1000 characters as input
 msg:	.asciiz "Invalid input"
 msg1:	.asciiz "Invalid input"
 
 .text
 main:	li $s0, 0							#Register to store sum of the values of the characters in our base system
-	li $s5, 30							#Initializing register to 29, the base with my Id. So that we can multiply by 29 with each character from the back
+	li $s5, 29							#Initializing register to 29, the base with my Id. So that we can multiply by 29 with each character from the back
 	li $s6, 1							#A register to keep on multiplying by our base, since the last character will be the value only
 
 	li $t0, 0							#Boolean register that stores 0 if we haven't reached a valid character, 1 if we have
@@ -15,11 +15,11 @@ main:	li $s0, 0							#Register to store sum of the values of the characters in 
 							
 	li $v0, 8						
 	la $a0, reply							#Reading input string
-	li $a1, 11
+	li $a1, 1001
 	syscall
  	
 	la $s4, reply							#Loading the address of reply in $s1 so that we can add 1 to access each character							#Loading address of reply in $s2 as well so that we can check if we've finished scanning the first character
-	addi $s1, $s4, 9
+	addi $s1, $s4, 999
 						
 First:	blt $s1, $s4, call							
 	lb $a0, 0($s1)
@@ -57,7 +57,6 @@ After1:	beq $a1, $s4, return						#if the white space characters are either the 
 	addi $t1, $t1, 1
 	beq $t1, 4, return						
 									
-
 	beq $t0, $zero, After
 	lb $a0, -1($a1)
 
