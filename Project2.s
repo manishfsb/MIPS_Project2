@@ -52,7 +52,10 @@ Base:	mult $s6, $s5
 	mflo $s6
 	j After								#decrement address of reply by 1 until we've reached the beginning of the string
 
-After1:	beq $a1, $s4, skip						#if the filling characters are either the first or last character, we don't check further. If they're not, we check left and right to see if they're invalid
+After1:	beq $a1, $s4, skip
+	addi $t1, $t1, 1
+	beq $t1, 4, skip
+							#if the filling characters are either the first or last character, we don't check further. If they're not, we check left and right to see if they're invalid
 
 	beq $t0, $zero, After
 	lb $a0, -1($a1)
