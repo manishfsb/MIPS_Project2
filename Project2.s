@@ -87,21 +87,23 @@ more:
 	bge $a0, 48, numeric
 		
 							
-numeric:li $s2, -48							# - 48 in s2 because 0 has value 0 in our base system
+numeric:li $s2, -48
+	j Common							# - 48 in s2 because 0 has value 0 in our base system
 							
 Lower:	li $s2, -87							# - 87 in s2 because a has value 10 in our base system
+	j Common
 
 Upper:	li $s2, -55							# - 55 in s2 because A has value 10 in our base system
-
+	j Common
 			
 Common:	addi $t1, $t1, 1
-	li $t0, 1
-	li $s2, -48	
+	li $t0, 1	
 	add $s3, $a0, $s2						#instead of repeating the same steps in the three labels, we just load the values we use to get the value of a character in each label and then do all the computations in one common label.
 	mult $s6, $s3
 	mflo $s7							
 	add $s0, $s0, $s7
-	beq $t1, 4, return						
+	beq $t1, 4, return
+	j Base						
 
 invalid:li $v1, -1							#in case, any among the four characters are invalid, we store -1 in v1 and later check if it is -1 in print label
 	j return
