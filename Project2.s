@@ -60,16 +60,16 @@ LoopA:
 	j First
 
 After2:	
-	addi $s1, $s1, -1
+	addi $a1, $a1, -1
 	j First
 
 Sub:	beq $t2, $zero, invalid						#if we haven't found a valid character while scanning through all leading and trailing white spaces, we don't call the subfunction else we do
-	j First	
+	
 	lb $a0, 0($t3)							#Load the character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
 	j Filter
 									
 After:	blt $t3, $s4, return						#checking if s1 is less than s4 which is the address of the first character, at which point we terminate 
-	addi $t3, $a1, -1						#decrementing by 1 as we are iterating from the back
+	addi $t3, $t3, -1						#decrementing by 1 as we are iterating from the back
 	j Sub
 
 Base:	mult $s6, $s5							#keep on multiplying s6 by our base to calculate the total value correctly, equivalent to t6 = t6 * t5 in high level languages
