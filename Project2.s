@@ -24,7 +24,7 @@ main:	li $s0, 0							#Register to store sum of the values of the characters in 
 	move $a1, $s1
 	jal Sub1							#Calling our subprogram sub1, rearranged print, invalid and End labels so that we aren't calling our subprogram infinitely
 
-	print:							
+print:							
 	beq $v1, -1, invali						#checking if a character was invalid passed through v1, if not print the sum of values
 
 	li $v0, 1
