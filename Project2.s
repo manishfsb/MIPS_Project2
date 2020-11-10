@@ -63,23 +63,25 @@ After2:
 	addi $s1, $s1, -1
 	j First
 
-Sub:	lb $a0, 0($t3)							#Load the character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
+Sub:	beq $t2, $zero, invalid						#if we haven't found a valid character while scanning through all leading and trailing white spaces, we don't call the subfunction else we do
+	j First	
+	lb $a0, 0($t3)							#Load the character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
 	j Filter
 									
-After:	blt $a1, $s4, return						#checking if s1 is less than s4 which is the address of the first character, at which point we terminate 
-	addi $a1, $a1, -1						#decrementing by 1 as we are iterating from the back
+After:	blt $t3, $s4, return						#checking if s1 is less than s4 which is the address of the first character, at which point we terminate 
+	addi $t3, $a1, -1						#decrementing by 1 as we are iterating from the back
 	j Sub
 
 Base:	mult $s6, $s5							#keep on multiplying s6 by our base to calculate the total value correctly, equivalent to t6 = t6 * t5 in high level languages
 	mflo $s6
 	j After								
 
-After1:	beq $a1, $s4, return						#if the white space characters are either the first or last character, we don't check further. If they're not, we check left and right to see if they're invalid
+After1:	beq $t3, $s4, return						#if the white space characters are either the first or last character, we don't check further. If they're not, we check left and right to see if they're invalid
 	addi $t1, $t1, 1
 	beq $t1, 4, return						
 									
 	beq $t0, $zero, After
-	lb $a0, -1($a1)
+	lb $a0, -1($t3)
 
 	beq $a0, 32, After 
 	beq $a0, 9, After
@@ -126,13 +128,11 @@ Common:	addi $t1, $t1, 1
 	j Base						
 
 invalid:li $v1, -1							#in case, any among the four characters are invalid, we store -1 in v1 and later check if it is -1 in print label
-	j return
 
 return:	move $v0, $s0
 	jr $ra
 
-call:	beq $t2, $zero, invalid						#if we haven't found a valid character while scanning through all leading and trailing white spaces, we don't call the subfunction else we do
-	j First						
+call:						
 							
 
 	
