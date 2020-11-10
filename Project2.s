@@ -22,7 +22,7 @@ main:	li $s0, 0							#Register to store sum of the values of the characters in 
 	addi $s1, $s4, 9
 
 	move $a1, $s1
-	jal Sub1
+	jal Sub1							#Calling our subprogram sub1, rearranged print, invalid and End labels so that we aren't calling our subprogram infinitely
 
 	print:							
 	beq $v1, -1, invali						#checking if a character was invalid passed through v1, if not print the sum of values
@@ -40,10 +40,8 @@ invali:
 End:	li $v0, 10							#terminate once the output or invalid string is printed
 	syscall
 
-	
-Sub1:
-					
-First:	blt $a1, $s4, Sub							
+Sub1:						
+First:	blt $a1, $s4, Sub						#this branch checks if we're done removing leading spaces, then we check for just the four characters which might or might not be valid						
 	lb $a0, 0($a1)
 
 LoopA:
@@ -55,7 +53,7 @@ LoopA:
 	beq $t2, 1, invalid
 	
 	li $t2, 1							#Changing the register to 1 to indicate we have reached our first valid character
-	la $t3, 0($a1)							#storing the address and moving address to a1 to later pass to our subprogram
+	la $t3, 0($a1)							#storing the address and moving address to t3 to later remember where we should start scanning 4 characters from
 	addi $a1, $a1, -4						#once we reach the first valid character, we only care about the leading white spaces, we skip the next four characters because they will be filtered in our subprogram
 	j First
 
@@ -63,12 +61,12 @@ After2:
 	addi $a1, $a1, -1
 	j First
 
-Sub:	beq $t2, $zero, invalid						#if we haven't found a valid character while scanning through all leading and trailing white spaces, we don't call the subfunction else we do
+Sub:	beq $t2, $zero, invalid						#if we haven't found a valid character while scanning through all leading and trailing white spaces, instead of proceeding to calculation, we go to the invalid branch
 	
 	lb $a0, 0($t3)							#Load the character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
 	j Filter
 									
-After:	blt $t3, $s4, return						#checking if s1 is less than s4 which is the address of the first character, at which point we terminate 
+After:	blt $t3, $s4, return						#checking if t3 is less than s4 which is the address of the first character, at which point we return out of the program 
 	addi $t3, $t3, -1						#decrementing by 1 as we are iterating from the back
 	j Sub
 
@@ -118,19 +116,19 @@ Lower:	li $s2, -87							# - 87 in s2 because a has value 10 in our base system
 Upper:	li $s2, -55							# - 55 in s2 because A has value 10 in our base system
 	j Common
 			
-Common:	addi $t1, $t1, 1
-	li $t0, 1	
+Common:	addi $t1, $t1, 1						#register to track number of characters scanned
+	li $t0, 1							#boolean style register to track a valid character is scanned at least once, we use this to invalidate spaces between valid characters
 	add $s3, $a0, $s2						#instead of repeating the same steps in the three labels, we just load the values we use to get the value of a character in each label and then do all the computations in one common label.
 	mult $s6, $s3
 	mflo $s7							
-	add $s0, $s0, $s7
-	beq $t1, 4, return
+	add $s0, $s0, $s7						#finding the value of the character, then multiplying with the power of our base
+	beq $t1, 4, return						#once we're done scanning through 4 characters, we jump to return
 	j Base						
 
-invalid:li $v1, -1							#in case, any among the four characters are invalid, we store -1 in v1 and later check if it is -1 in print label
+invalid:li $v1, -1							#in case, any of the characters are invalid, we store -1 in v1 and later check if it is -1 in print label
 
-return:	move $v0, $s0
-	jr $ra
+return:	move $v0, $s0							#total value of the characters, if valid stored in s0, moved to v0 to return to our subprogram.
+	jr $ra								#return to the next line after where we call our program
 
 						
 
