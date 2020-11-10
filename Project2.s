@@ -20,8 +20,10 @@ main:	li $s0, 0							#Register to store sum of the values of the characters in 
  	
 	la $s4, reply							#Loading the address of reply in $s1 so that we can add -1 to access each character							#Loading address of reply in $s2 as well so that we can check if we've finished scanning the first character
 	addi $s1, $s4, 999
-	
-	jal First
+
+	move $a1, $s1
+	jal Sub1
+
 	print:							
 	beq $v1, -1, invali						#checking if a character was invalid passed through v1, if not print the sum of values
 
@@ -39,9 +41,10 @@ End:	li $v0, 10							#terminate once the output or invalid string is printed
 	syscall
 
 	
+Sub1:
 					
-First:	blt $s1, $s4, call							
-	lb $a0, 0($s1)
+First:	blt $a1, $s4, Sub							
+	lb $a0, 0($a1)
 
 LoopA:
 	beq $a0, 32, After2 
@@ -49,19 +52,18 @@ LoopA:
 	beq $a0, 0, After2						#Checking for space, tab, null and enter as only leading and trailing white spaces
 	beq $a0, 10, After2
 	
-	beq $t2, 1, invali
+	beq $t2, 1, invalid
 	
 	li $t2, 1							#Changing the register to 1 to indicate we have reached our first valid character
-	la $t3, 0($s1)							#storing the address and moving address to a1 to later pass to our subprogram
-	move $a1, $t3
-	addi $s1, $s1, -4						#once we reach the first valid character, we only care about the leading white spaces, we skip the next four characters because they will be filtered in our subprogram
+	la $t3, 0($a1)							#storing the address and moving address to a1 to later pass to our subprogram
+	addi $a1, $a1, -4						#once we reach the first valid character, we only care about the leading white spaces, we skip the next four characters because they will be filtered in our subprogram
 	j First
 
 After2:	
 	addi $s1, $s1, -1
 	j First
 
-Sub:	lb $a0, 0($a1)							#Load the character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
+Sub:	lb $a0, 0($t3)							#Load the character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
 	j Filter
 									
 After:	blt $a1, $s4, return						#checking if s1 is less than s4 which is the address of the first character, at which point we terminate 
