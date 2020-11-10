@@ -20,7 +20,26 @@ main:	li $s0, 0							#Register to store sum of the values of the characters in 
  	
 	la $s4, reply							#Loading the address of reply in $s1 so that we can add -1 to access each character							#Loading address of reply in $s2 as well so that we can check if we've finished scanning the first character
 	addi $s1, $s4, 999
-						
+	
+	jal First
+	print:							
+	beq $v1, -1, invali						#checking if a character was invalid passed through v1, if not print the sum of values
+
+	li $v0, 1
+	add $a0, $s0, $zero						#print the total value stored in $s0 across all three cases
+	syscall	
+	j End
+	
+invali: 
+	li $v0, 4
+	la $a0, msg1							#print the string 'Invalid input' in case we have invalid cases
+	syscall 
+	
+End:	li $v0, 10							#terminate once the output or invalid string is printed
+	syscall
+
+	
+					
 First:	blt $s1, $s4, call							
 	lb $a0, 0($s1)
 
@@ -110,24 +129,9 @@ invalid:li $v1, -1							#in case, any among the four characters are invalid, we
 return:	move $v0, $s0
 	jr $ra
 
-call:	beq $t2, $zero, invali						#if we haven't found a valid character while scanning through all leading and trailing white spaces, we don't call the subfunction else we do
-	jal Sub
+call:	beq $t2, $zero, invalid						#if we haven't found a valid character while scanning through all leading and trailing white spaces, we don't call the subfunction else we do
+	j First						
 							
-print:							
-	beq $v1, -1, invali						#checking if a character was invalid passed through v1, if not print the sum of values
-
-	li $v0, 1
-	add $a0, $s0, $zero						#print the total value stored in $s0 across all three cases
-	syscall	
-	j End
-	
-invali: 
-	li $v0, 4
-	la $a0, msg1							#print the string 'Invalid input' in case we have invalid cases
-	syscall 
-	
-End:	li $v0, 10							#terminate once the output or invalid string is printed
-	syscall
 
 	
 	
