@@ -1,6 +1,6 @@
 .data
 												
-reply:	.space 1000							#Taking 1000 characters as input
+reply:	.space 10							#Taking 1000 characters as input
 msg:	.asciiz "Invalid input"
 msg1:	.asciiz "Invalid input"
 
@@ -15,11 +15,11 @@ main:	li $s0, 0							#Register to store sum of the values of the characters in 
 							
 	li $v0, 8						
 	la $a0, reply							#Reading input string
-	li $a1, 1001
+	li $a1, 11
 	syscall
  	
 	la $s4, reply							#Loading the address of reply in $s1 so that we can add -1 to access each character							#Loading address of reply in $s2 as well so that we can check if we've finished scanning the first character
-	addi $s1, $s4, 999
+	addi $s1, $s4, 9
 
 	move $a1, $s1
 	jal Sub1
@@ -132,8 +132,7 @@ invalid:li $v1, -1							#in case, any among the four characters are invalid, we
 return:	move $v0, $s0
 	jr $ra
 
-call:						
-							
+						
 
 	
 	
